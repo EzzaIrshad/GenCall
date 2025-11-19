@@ -2,11 +2,10 @@
 
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import Link from 'next/link';
-import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
 import { OctagonAlertIcon } from 'lucide-react';
-
+import { useForm } from 'react-hook-form';
+import Link from 'next/link';
+import { FaGoogle, FaGithub } from 'react-icons/fa';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { authClient } from '@/lib/auth-client';
@@ -14,16 +13,17 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export const SignInView = () => {
-    const router = useRouter();
 
+    const router = useRouter();
     const [error, setError] = useState<string | null>(null)
     const [pending, setPending] = useState(false);
 
     const formSchema = z.object({
         email: z.email(),
-        password: z.string().min(1, {message: "Password is required!"})
+        password: z.string().min(1, { message: "Password is required!" })
     })
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -41,21 +41,42 @@ export const SignInView = () => {
         authClient.signIn.email(
             {
                 email: data.email,
-                password: data.password
+                password: data.password,
+                callbackURL: "/"
             },
             {
                 onSuccess: () => {
                     setPending(false);
-                    router.push('/')
+                    router.push("/")
                 },
-                onError: ({error}) => {
+                onError: ({ error }) => {
                     setPending(false);
                     setError(error.message)
                 }
             }
         )
     }
-    
+
+    const onSocial = (provider: "github" | "google") => {
+        setError(null);
+        setPending(true);
+
+        authClient.signIn.social(
+            {
+                provider: provider,
+                callbackURL: "/"
+            },
+            {
+                onSuccess: () => {
+                    setPending(false);
+                },
+                onError: ({ error }) => {
+                    setPending(false);
+                    setError(error.message)
+                }
+            }
+        )
+    }
 
     return (
         <div className='flex flex-col gap-6'>
@@ -135,20 +156,22 @@ export const SignInView = () => {
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <Button
+                                        onClick={() => onSocial("google")}
                                         disabled={pending}
                                         type='button'
                                         variant='outline'
                                         className='w-full cursor-pointer'
                                     >
-                                        Google
+                                        <FaGoogle />
                                     </Button>
                                     <Button
+                                        onClick={() => onSocial("github")}
                                         disabled={pending}
                                         type='button'
                                         variant='outline'
                                         className='w-full cursor-pointer'
                                     >
-                                        Github
+                                        <FaGithub />
                                     </Button>
                                 </div>
                                 <div className="text-center text-sm">
@@ -159,9 +182,9 @@ export const SignInView = () => {
                         </form>
                     </Form>
 
-                    
+
                     <div className="bg-radial from-green-700 to-green-900 relative hidden md:flex flex-col gap-y-4 items-center justify-center">
-                        <img src="/logo.svg" alt="Image" className='size-[92px]'/>
+                        <img src="/logo.svg" alt="Image" className='size-[92px]' />
                         <p className="text-2xl font-semibold text-white">
                             Meet.AI
                         </p>
