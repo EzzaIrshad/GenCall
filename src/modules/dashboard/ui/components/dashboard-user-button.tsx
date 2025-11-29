@@ -1,11 +1,12 @@
+import { Drawer, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { GeneratedAvatar } from '@/components/generated-avatar';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Drawer, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+
+import { ChevronDownIcon, CreditCardIcon, LogOutIcon } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { authClient } from '@/lib/auth-client'
-import { ChevronDownIcon, CreditCardIcon, LogOutIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React from 'react'
 
